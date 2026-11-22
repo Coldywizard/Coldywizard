@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Bloxd Downloads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Optional: put your own background at assets/images/background.png */
+  :root {
+    --bg-image: url("assets/images/background.png");
+    --sky-top: #5fb4f0; --sky-bottom: #bfe6ff;
+    --grass: #5aa832; --grass-dark: #478a26; --dirt: #8a5a35;
+    --ink: #1d2b3a; --muted: #5d7186;
+    --accent: #3fae3a; --accent-dark: #2d8a2a;
+    --danger: #d9473b; --danger-dark: #a8322a;
+    --blue: #3b82d9; --blue-dark: #2a62a8;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    font-family: "Pixelify Sans", "Trebuchet MS", system-ui, sans-serif;
+    color: var(--ink);
+    background:
+      var(--bg-image) center / cover no-repeat fixed,
+      linear-gradient(var(--grass) 0 24px, var(--grass-dark) 24px 32px, var(--dirt) 32px) bottom / 100% 160px no-repeat fixed,
+      linear-gradient(var(--sky-top), var(--sky-bottom)) fixed;
+    min-height: 100vh;
+    padding-bottom: 180px;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .85;
+    background:
+      linear-gradient(#fff,#fff) 12% 14% / 160px 28px no-repeat,
+      linear-gradient(#fff,#fff) calc(12% + 28px) calc(14% - 24px) / 100px 24px no-repeat,
+      linear-gradient(#fff,#fff) 68% 26% / 200px 32px no-repeat,
+      linear-gradient(#fff,#fff) calc(68% + 36px) calc(26% - 28px) / 120px 28px no-repeat,
+      linear-gradient(#fff,#fff) 38% 8% / 120px 24px no-repeat;
+  }
+  body.has-bg::before { display: none; }
+  body.has-bg::after { content: ""; position: fixed; inset: 0; background: rgba(0,20,40,.25); pointer-events: none; z-index: 0; }
+  main, header, footer, .adminbar { position: relative; z-index: 1; }
+
+  header { text-align: center; padding: 56px 20px 12px; }
+  header h1 { margin: 0; font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; color: #fff; text-shadow: 0 4px 0 rgba(20,60,100,.55); }
+  header p { margin: 10px 0 0; font-size: 1.15rem; color: #fff; text-shadow: 0 2px 0 rgba(20,60,100,.55); }
+
+  .grid { max-width: 1040px; margin: 36px auto 0; padding: 0 20px; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+
+  .card { background: #fff; border: 4px solid var(--ink); box-shadow: 0 8px 0 var(--ink); padding: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; }
+  .meta { width: 100%; display: flex; justify-content: space-between; font-size: .85rem; color: var(--muted); }
+  .icon { width: 112px; height: 112px; margin: 14px 0 10px; display: grid; place-items: center; background: #eaf4fb; border: 3px solid var(--ink); }
+  .icon img { width: 88px; height: 88px; object-fit: contain; image-rendering: pixelated; }
+  .card h2 { margin: 6px 0 2px; font-size: 1.35rem; font-weight: 700; overflow-wrap: anywhere; }
+  .card .sub { margin: 0 0 18px; color: var(--muted); font-size: 1rem; }
+
+  .btn { font: inherit; font-weight: 700; font-size: 1.1rem; color: #fff; text-decoration: none; text-align: center; display: block; padding: 12px 16px; background: var(--accent); border: 3px solid var(--ink); box-shadow: 0 5px 0 var(--accent-dark); cursor: pointer; }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--accent-dark); }
+  .btn:focus-visible { outline: 3px solid #ffd23f; outline-offset: 3px; }
+  .card .btn { margin-top: auto; width: 100%; }
+  .btn.small { font-size: .95rem; padding: 7px 12px; box-shadow: 0 4px 0 var(--accent-dark); }
+  .btn.blue { background: var(--blue); box-shadow: 0 5px 0 var(--blue-dark); }
+  .btn.blue.small { box-shadow: 0 4px 0 var(--blue-dark); }
+  .btn.red { background: var(--danger); box-shadow: 0 5px 0 var(--danger-dark); }
+  .btn.red.small { box-shadow: 0 4px 0 var(--danger-dark); }
+  .btn.grey { background: #8a97a5; box-shadow: 0 4px 0 #66727f; }
+
+  footer { text-align: center; margin-top: 48px; color: #fff; font-size: .95rem; text-shadow: 0 2px 0 rgba(0,0,0,.5); }
+
+  /* ---------- editor mode ---------- */
+  .adminbar { max-width: 1040px; margin: 20px auto 0; padding: 14px 18px; background: #fff7cc; border: 4px solid var(--ink); box-shadow: 0 6px 0 var(--ink); display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .adminbar strong { margin-right: auto; }
+  .adminbar .btn { display: inline-block; }
+  .tools { display: flex; gap: 8px; flex-wrap: wrap; width: 100%; margin-bottom: 12px; }
+  .tools .btn { flex: 1; min-width: 70px; }
+  .card.add { justify-content: center; min-height: 260px; border-style: dashed; background: rgba(255,255,255,.75); cursor: pointer; font-size: 1.3rem; font-weight: 700; color: var(--ink); }
+  .card.add span { font-size: 3rem; line-height: 1; }
+
+  dialog { border: 4px solid var(--ink); padding: 0; width: min(460px, 92vw); font-family: inherit; color: var(--ink); background: #fff; box-shadow: 0 8px 0 var(--ink); }
+  dialog::backdrop { background: rgba(10,25,40,.6); }
+  dialog form { padding: 20px; display: grid; gap: 12px; }
+  dialog h3 { margin: 0; font-size: 1.5rem; }
+  label { display: grid; gap: 4px; font-weight: 600; font-size: .95rem; }
+  input[type=text] { font: inherit; padding: 9px 10px; border: 3px solid var(--ink); background: #f5fafd; width: 100%; }
+  input[type=text]:focus-visible { outline: 3px solid #ffd23f; }
+  .hint { font-weight: 400; font-size: .8rem; color: var(--muted); }
+  .thumbrow { display: flex; gap: 12px; align-items: center; }
+  .thumbrow .icon { margin: 0; width: 84px; height: 84px; flex: none; }
+  .thumbrow .icon img { width: 64px; height: 64px; }
+  .thumbbtns { display: flex; flex-direction: column; gap: 8px; }
+  .row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+  .toast { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: var(--ink); color: #fff; padding: 12px 18px; z-index: 50; border: 3px solid #fff; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="siteTitle"></h1>
+  <p id="siteSubtitle"></p>
+</header>
+
+<div class="adminbar" id="adminbar" hidden>
+  <strong>Editor mode</strong>
+  <button class="btn small blue" id="btnSite">Site text</button>
+  <button class="btn small" id="btnExport">Save downloads.json</button>
+  <button class="btn small grey" id="btnImport">Load json</button>
+  <button class="btn small red" id="btnReset">Discard changes</button>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
+</div>
+
+<main><div class="grid" id="grid"></div></main>
+<footer id="footer"></footer>
+
+<!-- item editor -->
+<dialog id="itemDialog">
+  <form method="dialog" id="itemForm">
+    <h3 id="itemDialogTitle">Add download</h3>
+    <label>Name
+      <input type="text" id="fTitle" required placeholder="My Texture Pack">
+    </label>
+    <label>Small line under the name
+      <input type="text" id="fSub" placeholder="Texture Pack, Asset Pack, by me...">
+    </label>
+    <label>File path or link
+      <input type="text" id="fFile" required placeholder="files/my-pack.zip">
+      <span class="hint">Upload the file to your repo's files folder and type files/name.zip, or paste any direct link.</span>
+    </label>
+    <label>Updated text
+      <input type="text" id="fUpdated" placeholder="Nov 22, 2026">
+    </label>
+    <div>
+      <div style="font-weight:600;font-size:.95rem;margin-bottom:6px">Thumbnail</div>
+      <div class="thumbrow">
+        <div class="icon" id="fPreview"></div>
+        <div class="thumbbtns">
+          <button type="button" class="btn small blue" id="fPick">Choose image</button>
+          <button type="button" class="btn small grey" id="fClear">Remove</button>
+        </div>
+        <input type="file" id="fImage" accept="image/*" hidden>
+      </div>
+    </div>
+    <div class="row">
+      <button type="button" class="btn small grey" id="fCancel">Cancel</button>
+      <button type="submit" class="btn small" id="fSave" value="save">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- site text editor -->
+<dialog id="siteDialog">
+  <form method="dialog" id="siteForm">
+    <h3>Site text</h3>
+    <label>Page title <input type="text" id="sTitle"></label>
+    <label>Line under the title <input type="text" id="sSubtitle"></label>
+    <label>Footer credit <input type="text" id="sCredit"></label>
+    <div class="row">
+      <button type="button" class="btn small grey" id="sCancel">Cancel</button>
+      <button type="submit" class="btn small">Save</button>
+    </div>
+  </form>
+</dialog>
+
+<script>
+/* =============================================================
+   HOW THIS WORKS
+   - Visitors see whatever is in downloads.json (in your repo).
+   - To edit: open your site with  ?admin  on the end, e.g.
+       https://yourname.github.io/download/?admin
+     Add, edit, reorder and delete cards, pick thumbnails,
+     then press "Save downloads.json" and upload that file to
+     your GitHub repo (replace the old one). Done.
+   ============================================================= */
+
+const DEFAULT_DATA = {
+  site: {
+    title: "My Bloxd Downloads",
+    subtitle: "Assets, texture packs and rigs. Free to use.",
+    credit: "YourName"
+  },
+  items: [
+    { title: "Essentials", sub: "Asset Pack", icon: "", file: "files/essentials.zip", updated: "Nov 22, 2026" }
+  ]
+};
+
+const IS_ADMIN = /[?&#]admin\b/.test(location.search + location.hash);
+const DRAFT_KEY = "dl-site-draft";
+let data = null;
+let editIndex = -1;       // -1 means "adding a new one"
+let editIcon = "";        // thumbnail being edited
+
+const $ = id => document.getElementById(id);
+
+/* ---------- loading ---------- */
+async function load() {
+  if (IS_ADMIN) {
+    try {
+      const d = localStorage.getItem(DRAFT_KEY);
+      if (d) { data = JSON.parse(d); return; }
+    } catch (e) {}
+  }
+  try {
+    const r = await fetch("downloads.json?v=" + Date.now());
+    if (!r.ok) throw new Error("no json");
+    data = await r.json();
+  } catch (e) {
+    data = structuredClone(DEFAULT_DATA);
+  }
+}
+
+function saveDraft() {
+  try { localStorage.setItem(DRAFT_KEY, JSON.stringify(data)); } catch (e) {}
+}
+
+/* ---------- rendering ---------- */
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+}
+
+function makeIcon(src, alt) {
+  const box = el("div", "icon");
+  if (!src) { box.textContent = "\u{1F4E6}"; box.style.fontSize = "52px"; return box; }
+  const img = new Image();
+  img.src = src; img.alt = alt || "";
+  img.onerror = () => { box.textContent = "\u{1F4E6}"; box.style.fontSize = "52px"; };
+  box.appendChild(img);
+  return box;
+}
+
+function render() {
+  document.title = data.site.title;
+  $("siteTitle").textContent = data.site.title;
+  $("siteSubtitle").textContent = data.site.subtitle;
+  $("footer").textContent = data.site.credit ? "Website by " + data.site.credit : "";
+
+  const grid = $("grid");
+  grid.replaceChildren();
+
+  data.items.forEach((item, i) => {
+    const card = el("article", "card");
+
+    if (IS_ADMIN) {
+      const tools = el("div", "tools");
+      tools.append(
+        tool("Edit", "blue", () => openItem(i)),
+        tool("\u2190", "grey", () => move(i, -1)),
+        tool("\u2192", "grey", () => move(i, 1)),
+        tool("Delete", "red", () => remove(i))
+      );
+      card.appendChild(tools);
+    }
+
+    const meta = el("div", "meta");
+    meta.appendChild(el("span", "", item.updated ? "Updated: " + item.updated : ""));
+    card.append(meta, makeIcon(item.icon, item.sub), el("h2", "", item.title), el("p", "sub", item.sub || ""));
+
+    const a = el("a", "btn", "Download");
+    a.href = item.file;
+    a.setAttribute("download", "");
+    card.appendChild(a);
+    grid.appendChild(card);
+  });
+
+  if (IS_ADMIN) {
+    const add = el("article", "card add");
+    add.tabIndex = 0;
+    add.append(el("span", "", "+"), document.createTextNode("Add download"));
+    add.onclick = () => openItem(-1);
+    add.onkeydown = e => { if (e.key === "Enter" || e.key === " ") openItem(-1); };
+    grid.appendChild(add);
+  }
+}
+
+function tool(label, kind, fn) {
+  const b = el("button", "btn small " + kind, label);
+  b.type = "button";
+  b.onclick = fn;
+  return b;
+}
+
+/* ---------- editor actions ---------- */
+function changed() { saveDraft(); render(); }
+
+function move(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= data.items.length) return;
+  [data.items[i], data.items[j]] = [data.items[j], data.items[i]];
+  changed();
+}
+
+function remove(i) {
+  if (!confirm('Delete "' + data.items[i].title + '"?')) return;
+  data.items.splice(i, 1);
+  changed();
+}
+
+function todayText() {
+  return new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+}
+
+function setPreview() {
+  const p = $("fPreview");
+  p.replaceChildren();
+  const box = makeIcon(editIcon, "");
+  p.innerHTML = box.innerHTML;
+  p.style.fontSize = box.style.fontSize;
+}
+
+function openItem(i) {
+  editIndex = i;
+  const it = i >= 0 ? data.items[i] : { title: "", sub: "", icon: "", file: "files/", updated: todayText() };
+  $("itemDialogTitle").textContent = i >= 0 ? "Edit download" : "Add download";
+  $("fTitle").value = it.title;
+  $("fSub").value = it.sub || "";
+  $("fFile").value = it.file;
+  $("fUpdated").value = it.updated || "";
+  editIcon = it.icon || "";
+  setPreview();
+  $("itemDialog").showModal();
+}
+
+$("fPick").onclick = () => $("fImage").click();
+$("fClear").onclick = () => { editIcon = ""; setPreview(); };
+$("fCancel").onclick = () => $("itemDialog").close();
+
+$("fImage").onchange = e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const img = new Image();
+    img.onload = () => {
+      // shrink big images so downloads.json stays small
+      const max = 256;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const c = document.createElement("canvas");
+      c.width = Math.round(img.width * scale);
+      c.height = Math.round(img.height * scale);
+      c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+      editIcon = c.toDataURL("image/png");
+      setPreview();
+    };
+    img.src = reader.result;
+  };
+  reader.readAsDataURL(file);
+  e.target.value = "";
+};
+
+$("itemForm").onsubmit = e => {
+  const item = {
+    title: $("fTitle").value.trim(),
+    sub: $("fSub").value.trim(),
+    icon: editIcon,
+    file: $("fFile").value.trim(),
+    updated: $("fUpdated").value.trim()
+  };
+  if (editIndex >= 0) data.items[editIndex] = item; else data.items.push(item);
+  changed();
+};
+
+/* site text */
+$("btnSite").onclick = () => {
+  $("sTitle").value = data.site.title;
+  $("sSubtitle").value = data.site.subtitle;
+  $("sCredit").value = data.site.credit;
+  $("siteDialog").showModal();
+};
+$("sCancel").onclick = () => $("siteDialog").close();
+$("siteForm").onsubmit = () => {
+  data.site = { title: $("sTitle").value.trim(), subtitle: $("sSubtitle").value.trim(), credit: $("sCredit").value.trim() };
+  changed();
+};
+
+/* export / import / reset */
+function toast(msg) {
+  const t = el("div", "toast", msg);
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 5000);
+}
+
+$("btnExport").onclick = () => {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "downloads.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast("Now upload downloads.json to your GitHub repo to publish it.");
+};
+
+$("btnImport").onclick = () => $("importFile").click();
+$("importFile").onchange = async e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  try {
+    const d = JSON.parse(await f.text());
+    if (!d.site || !Array.isArray(d.items)) throw new Error();
+    data = d; changed(); toast("Loaded.");
+  } catch (err) { toast("That is not a valid downloads.json file."); }
+  e.target.value = "";
+};
+
+$("btnReset").onclick = async () => {
+  if (!confirm("Throw away your unsaved changes and reload the published version?")) return;
+  try { localStorage.removeItem(DRAFT_KEY); } catch (e) {}
+  await load(); render();
+};
+
+/* ---------- start ---------- */
+(async function init() {
+  await load();
+  if (IS_ADMIN) $("adminbar").hidden = false;
+  render();
+  const probe = new Image();
+  probe.onload = () => document.body.classList.add("has-bg");
+  probe.src = "assets/images/background.png";
+})();
+</script>
+</body>
+</html>

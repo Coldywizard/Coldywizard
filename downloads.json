@@ -1,0 +1,16 @@
+{
+  "site": {
+    "title": "Coldywizard Official Website",
+    "subtitle": "Assets, texture packs and rigs. Free to use.",
+    "credit": "Coldywizard"
+  },
+  "items": [
+    {
+      "title": "My BloxdHub",
+      "sub": "Coldywizard",
+      "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAFgUlEQVR4AeyaXUxcRRTH//cuX2ERkI8WpLFNaiHVUk2RoFbTAvokbTV9AWxCbTU2RqvyZJE3kWptbDQmCpSqoMQmpilFU2sbfalJk1raitGkX0bYCpKolY/SUtj1ni2THW5n7r2zy5ave9kfM/fMOXPO/Gd2YWH13C2NAcaaFzICMh4qzwxMFbIcvJ3VZNfyMXzfaa065vnlCsAfgN4b9WDwdurHpwQggsYYonGRjfmb27Lke8Ewj2XH1kCE2Y/di/IyG/Oh1j0BpMJ8RuePFS/E5bi94Em7MwMispekgyEat7PdtSgLjM7kf8AYuWc9eJiPVWuVi18beypQ6z4FeGXmY989Afyuy14PyOfAzt8QDdpquyCie8dC8Ih8zDa+PqpZBvtRS617AmQqyewFBQWYycjqltmlJ6BwQS142ASBQAAzGVZn9t1p4KHjzmA+1EoFoEERM3nxVJuoZivbvBPALMacFaAibTl4zAtn93NWALZAu9YVQKbQteEx8DA/eqGZybA6fZf7wMPs5lb5BJgncHJPgtn5iXxENn4eu3HeV9ZXFoCS8ny340kcrSmz5Ngb6yzHKV7kI7KRL+OIkZuvhfqyhcrs+vX/NDBkTlZ2XdOgGQ7ThZE6okfEJyCi7FMUTDtPhDOdsgDhJHEaU1J3CGaK32wHseH9H7D5s05UtXbhmU/PYOeRC+jyXcHY2Bj8fn8wRTgiKAvQsm0NeIKZHXwb9wdAX0PXRh14h1w0TYOmaRgcHER3jw89f/yOXl83jp78FdUtx+HxeKDrOpq2PhqsKxTprKc7cwt5pcZ5kByrY9f3Pag53I2KxhMofasjuEvm3ePvn6jvQGldB9bv/hZDA0NCQlnUe+kJMaDaVCOVBaAEA1ev45dzl+AzduOv/v7gu0NN02goIpo3F6FhUyE+KF+F3Rvvx7sb81G/4T5seXgxlmZ4QafoxrgfupHKeEzKpWlmy6Rh6U1YAsTHeKQTRjKQmexFdtodWLIgFbk56cjLycSKxQvxVOFS7KkswjevluLwa4/j4MslaN9egkMcHlIF6ldYAsR4QmHGnweCO1Ocl4l3nl5h7NpKfFhRgL1VRWjd+gj2b3sMB15ci4MvFaPdKJyKVi8zehGhlSjkiDVOAC3m5Kmz+KnzLDpP/4xdbcdQUvsF1ta0ovSrGKxuAx5sGcfK5lEsbxpBXsNV5DYM22ZZ9tEwhDSMILtqjxDbSS0cwhKA5mM/eqh/C3RCBHjIdouzyUA+Aqxi/XQMTdOwW7s2bAHsJp7u8UU5WeCR1TNnBZAt2GxXFyBgTMEwusoPFitrlSecCGDzTdw6bZQFSEpJAuFNTXKaY5IfxVoxydnhTVLyzZpoXhby7I/rwNP09yaIUBaAJbBsT+8DRJz5xDIsOCiKI5uT2OAEat+iI4BaDdPq7QqgKn9cUgqCeFNUQ6PmH6xnoi7VJO4JUFWM+XuMNx//fl0PERebqyHigmFn8bL24j5x7LnGV4S5KL8e5jtBqiHsE6BpGhLj48QkxCJRQEJcDOyuxPhYYWxwPkk+CK587+vgkX32IWwBBDlnpckVYFZuW4RF808H9wSoijk6eAV2qM7p1N8uL407nYv5qZ8A49Xf+Ds1LEGUrinKzT4qQ626AFFa23RN6wpAHxhmTNcuRCNv9QOrwUPHncHn0/kbJ/2syrcxk3GyBt5HWQA+eC70pQIkeGPAU1mXDxHtH5fDCcu2t0PE8f3PQcSX75UhEuDwkgrgMH7Wu7kCzPotjHAB0hPwp68PMlYNpIFx/lIvnKAP90PEiVPnIcLXN4hIMM8p00kqgCxgrtldAdhH5MyteafZb1HUmsec3D+f/jkYvD//3xrefrv67gm4XUpHK0+k8/4PAAD//8uAb1wAAAAGSURBVAMAw2J53OhRaYgAAAAASUVORK5CYII=",
+      "file": "files/essentials.zip",
+      "updated": "Nov 22, 2026"
+    }
+  ]
+}

@@ -78,12 +78,12 @@
   header { text-align: center; padding: 88px 20px 12px; }
   .logo {
     display: block; margin: 0 auto 14px;
-    max-width: min(80%, 420px); max-height: 150px; object-fit: contain;
+    width: var(--logo-w, 220px); max-width: 92%; height: auto;
     filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
     transition: transform .28s cubic-bezier(.34, 1.56, .64, 1), filter .28s;
     cursor: pointer;
   }
-  .logo:hover, .logo:focus-visible { transform: scale(1.14) translateY(-6px); filter: drop-shadow(0 12px 0 rgba(0,0,0,.25)); }
+  .logo:hover, .logo:focus-visible { transform: scale(var(--logo-pop, 1.14)) translateY(-6px); filter: drop-shadow(0 12px 0 rgba(0,0,0,.25)); }
   header h1 { margin: 0; font-size: clamp(2.2rem, 6vw, 3.6rem); font-weight: 700; color: var(--head-text); text-shadow: var(--head-shadow); }
 
   /* ---------- socials ---------- */
@@ -196,6 +196,9 @@
   .thumbbtns { display: flex; flex-direction: column; gap: 8px; }
   .logoprev { width: 120px; height: 84px; flex: none; display: grid; place-items: center; background: var(--iconbg); border: 3px solid var(--line); overflow: hidden; font-size: .8rem; color: var(--muted); text-align: center; }
   .logoprev img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .slider { display: grid; gap: 4px; }
+  .slider .top { display: flex; justify-content: space-between; font-weight: 600; font-size: .95rem; }
+  input[type=range] { width: 100%; accent-color: var(--accent); }
   .row { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
   .socrows { display: grid; gap: 10px; max-height: 44vh; overflow-y: auto; padding-bottom: 6px; }
   .socrow { display: grid; grid-template-columns: 130px 1fr auto; gap: 8px; align-items: center; }
@@ -300,6 +303,15 @@
         <input type="file" id="sLogoFile" accept="image/png,image/*" hidden>
       </div>
     </div>
+    <div class="slider">
+      <div class="top"><span>Logo size</span><span id="sSizeVal"></span></div>
+      <input type="range" id="sSize" min="40" max="700" step="5">
+    </div>
+    <div class="slider">
+      <div class="top"><span>Pop size when hovered</span><span id="sPopVal"></span></div>
+      <input type="range" id="sPop" min="100" max="220" step="2">
+      <span class="hint">100% means no pop. Higher means it grows more.</span>
+    </div>
     <div class="row">
       <button type="button" class="btn small grey" id="sCancel">Cancel</button>
       <button type="submit" class="btn small">Save</button>
@@ -353,6 +365,8 @@ const DEFAULT_DATA = {
     title: "My Bloxd Downloads",
     credit: "YourName",
     logo: "",
+    logoSize: 220,
+    logoPop: 114,
     contact: { text: "Build your own website!", link: "" },
     socials: []
   },
@@ -440,6 +454,8 @@ function normalize(d) {
   d.site.title = d.site.title || "";
   d.site.credit = d.site.credit || "";
   d.site.logo = d.site.logo || "";
+  d.site.logoSize = Number(d.site.logoSize) || 220;
+  d.site.logoPop = Number(d.site.logoPop) || 114;
   d.site.contact = Object.assign({ text: "Build your own website!", link: "" }, d.site.contact || {});
   if (!d.site.contact.text) d.site.contact.text = "Build your own website!";
 
@@ -526,8 +542,15 @@ function renderContact() {
   }
 }
 
+function setLogoVars(size, pop) {
+  const root = document.documentElement.style;
+  root.setProperty("--logo-w", size + "px");
+  root.setProperty("--logo-pop", (pop / 100).toString());
+}
+
 function renderLogo() {
   const img = $("siteLogo");
+  setLogoVars(data.site.logoSize, data.site.logoPop);
   if (data.site.logo) { img.src = data.site.logo; img.alt = data.site.title || "Logo"; img.hidden = false; }
   else { img.removeAttribute("src"); img.hidden = true; }
 }
@@ -677,13 +700,28 @@ $("btnSite").onclick = () => {
   $("sCredit").value = data.site.credit;
   editLogo = data.site.logo;
   setLogoPreview();
+  $("sSize").value = data.site.logoSize;
+  $("sPop").value = data.site.logoPop;
+  updateSliderLabels();
   $("siteDialog").showModal();
 };
+function updateSliderLabels() {
+  $("sSizeVal").textContent = $("sSize").value + " px";
+  $("sPopVal").textContent = $("sPop").value + "%";
+}
+/* sliders change the real logo on the page while you drag, so you can see the result */
+function liveLogo() {
+  updateSliderLabels();
+  setLogoVars(Number($("sSize").value), Number($("sPop").value));
+}
+$("sSize").oninput = liveLogo;
+$("sPop").oninput = liveLogo;
+$("siteDialog").addEventListener("close", renderLogo);   /* cancel or Esc puts the saved size back */
 $("sLogoPick").onclick = () => $("sLogoFile").click();
 $("sLogoClear").onclick = () => { editLogo = ""; setLogoPreview(); };
 $("sLogoFile").onchange = e => {
   const f = e.target.files[0];
-  if (f) readImage(f, 512, url => { editLogo = url; setLogoPreview(); });
+  if (f) readImage(f, 1000, url => { editLogo = url; setLogoPreview(); });
   e.target.value = "";
 };
 $("sCancel").onclick = () => $("siteDialog").close();
@@ -691,6 +729,8 @@ $("siteForm").onsubmit = () => {
   data.site.title = $("sTitle").value.trim();
   data.site.credit = $("sCredit").value.trim();
   data.site.logo = editLogo;
+  data.site.logoSize = Number($("sSize").value);
+  data.site.logoPop = Number($("sPop").value);
   changed();
 };
 

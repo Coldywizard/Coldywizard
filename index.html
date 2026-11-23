@@ -196,6 +196,31 @@
   .thumbbtns { display: flex; flex-direction: column; gap: 8px; }
   .logoprev { width: 120px; height: 84px; flex: none; display: grid; place-items: center; background: var(--iconbg); border: 3px solid var(--line); overflow: hidden; font-size: .8rem; color: var(--muted); text-align: center; }
   .logoprev img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  textarea { font: inherit; color: var(--text); padding: 9px 10px; border: 3px solid var(--line); background: var(--field); width: 100%; min-height: 84px; resize: vertical; }
+  textarea:focus-visible { outline: 3px solid #ffd23f; }
+  #contactDialog form { max-height: 88vh; overflow-y: auto; }
+
+  /* ---------- the popup visitors see ---------- */
+  #contactPopup { width: min(520px, 94vw); }
+  #contactPopup[open] { animation: popIn .22s cubic-bezier(.34, 1.56, .64, 1); }
+  @keyframes popIn { from { transform: scale(.88); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .pop-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 16px; background: var(--accent); color: #fff; border-bottom: 4px solid var(--line); }
+  .pop-head h3 { margin: 0; font-size: 1.3rem; overflow-wrap: anywhere; }
+  .pop-x { font: inherit; font-weight: 700; font-size: 1.1rem; width: 38px; height: 38px; flex: none; cursor: pointer; color: #fff; background: var(--danger); border: 3px solid var(--line); box-shadow: 0 3px 0 var(--danger-dark); }
+  .pop-x:active { transform: translateY(3px); box-shadow: none; }
+  .pop-x:focus-visible, .tab:focus-visible { outline: 3px solid #ffd23f; outline-offset: 2px; }
+  .tabs { display: flex; gap: 8px; padding: 14px 16px 0; flex-wrap: wrap; }
+  .tab { font: inherit; font-weight: 700; padding: 8px 16px; cursor: pointer; color: var(--text); background: var(--iconbg); border: 3px solid var(--line); box-shadow: 0 3px 0 var(--line); }
+  .tab[aria-selected="true"] { background: var(--blue); color: #fff; box-shadow: 0 3px 0 var(--blue-dark); }
+  .panel { padding: 16px; max-height: 56vh; overflow-y: auto; display: grid; gap: 12px; }
+  .panel .btn { display: block; }
+  .pop-text { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.5; margin: 0; }
+  .pop-empty { color: var(--muted); margin: 0; }
+  .emailbox { padding: 12px; border: 3px solid var(--line); background: var(--field); font-weight: 700; font-size: 1.1rem; text-align: center; overflow-wrap: anywhere; user-select: all; }
+  .pop-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .pop-actions .btn { flex: 1; min-width: 150px; }
+  .pop-foot { padding: 0 16px 16px; display: flex; justify-content: flex-end; }
+
   .slider { display: grid; gap: 4px; }
   .slider .top { display: flex; justify-content: space-between; font-weight: 600; font-size: .95rem; }
   input[type=range] { width: 100%; accent-color: var(--accent); }
@@ -216,10 +241,10 @@
 
 <div class="stars" aria-hidden="true"></div>
 
-<a class="contact-btn" id="contactBtn" tabindex="0" hidden>
+<button class="contact-btn" id="contactBtn" type="button" hidden>
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg>
   <span id="contactText"></span>
-</a>
+</button>
 
 <button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch between light and dark theme" title="Light / dark">
   <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
@@ -336,17 +361,38 @@
 <!-- top-left button editor -->
 <dialog id="contactDialog">
   <form method="dialog" id="contactForm">
-    <h3>Top-left button</h3>
+    <h3>Top-left button &amp; popup</h3>
     <label>Button text <input type="text" id="cText" placeholder="Build your own website!"></label>
-    <label>Where it goes
-      <input type="text" id="cLink" placeholder="https://discord.gg/yourinvite or you@email.com">
-      <span class="hint">A Discord invite, any link, or an email address. Visitors only see the button once this is filled in.</span>
+    <label>Your email (Gmail)
+      <input type="text" id="cEmail" placeholder="you@gmail.com">
+      <span class="hint">Visitors get a Copy Gmail button in the popup.</span>
     </label>
+    <label>Message at the top of the popup <textarea id="cMessage"></textarea></label>
+    <label>Extra button link (optional)
+      <input type="text" id="cLink" placeholder="https://discord.gg/yourinvite">
+      <span class="hint">Adds a Message me button, for example your Discord invite.</span>
+    </label>
+    <label>Info tab <textarea id="cInfo" placeholder="What you build, how long it takes, examples..."></textarea></label>
+    <label>Payment details tab <textarea id="cPay" placeholder="Prices, accepted payment methods, account details..."></textarea></label>
+    <span class="hint">Leave the Info or Payment box empty to hide that tab from visitors.</span>
     <div class="row">
       <button type="button" class="btn small grey" id="cCancel">Cancel</button>
       <button type="submit" class="btn small">Save</button>
     </div>
   </form>
+</dialog>
+
+<!-- popup that opens when visitors click the top-left button -->
+<dialog id="contactPopup" aria-labelledby="popTitle">
+  <div class="pop-head">
+    <h3 id="popTitle"></h3>
+    <button type="button" class="pop-x" id="popClose" aria-label="Close">✕</button>
+  </div>
+  <div class="tabs" id="popTabs" role="tablist"></div>
+  <div class="panel" id="popBody" role="tabpanel"></div>
+  <div class="pop-foot" id="popFoot" hidden>
+    <button type="button" class="btn small blue" id="popEdit">Edit this popup</button>
+  </div>
 </dialog>
 
 <script>
@@ -367,7 +413,7 @@ const DEFAULT_DATA = {
     logo: "",
     logoSize: 220,
     logoPop: 114,
-    contact: { text: "Build your own website!", link: "" },
+    contact: { text: "Build your own website!", email: "", message: "Want your own website? Email me what you need and I will get back to you.", link: "", info: "", payment: "" },
     socials: []
   },
   items: [
@@ -456,8 +502,18 @@ function normalize(d) {
   d.site.logo = d.site.logo || "";
   d.site.logoSize = Number(d.site.logoSize) || 220;
   d.site.logoPop = Number(d.site.logoPop) || 114;
-  d.site.contact = Object.assign({ text: "Build your own website!", link: "" }, d.site.contact || {});
-  if (!d.site.contact.text) d.site.contact.text = "Build your own website!";
+  const c = Object.assign({
+    text: "Build your own website!", email: "",
+    message: "Want your own website? Email me what you need and I will get back to you.",
+    link: "", info: "", payment: ""
+  }, d.site.contact || {});
+  if (!c.text) c.text = "Build your own website!";
+  /* older files kept an email in the link box; move it to the email field */
+  if (!c.email && /^(mailto:)?[^\s@\/]+@[^\s@\/]+\.[^\s@\/]+$/i.test(c.link || "")) {
+    c.email = c.link.replace(/^mailto:/i, "");
+    c.link = "";
+  }
+  d.site.contact = c;
 
   /* old files stored socials as {discord:"..", youtube:".."}; turn that into a list */
   let s = d.site.socials;
@@ -529,17 +585,9 @@ function renderSocials() {
 
 function renderContact() {
   const c = data.site.contact;
-  const btn = $("contactBtn");
-  const link = toLink(c.link);
   $("contactText").textContent = c.text;
-  btn.hidden = !link && !IS_ADMIN;
-  if (link) {
-    btn.href = link;
-    if (link.startsWith("mailto:")) { btn.removeAttribute("target"); btn.removeAttribute("rel"); }
-    else { btn.target = "_blank"; btn.rel = "noopener noreferrer"; }
-  } else {
-    btn.removeAttribute("href");
-  }
+  /* visitors only see the button once something is set up behind it */
+  $("contactBtn").hidden = !(c.email || c.link || c.info || c.payment) && !IS_ADMIN;
 }
 
 function setLogoVars(size, pop) {
@@ -783,24 +831,122 @@ $("socialForm").onsubmit = () => {
   changed();
 };
 
-/* ---------- top-left button editor ---------- */
+/* ---------- top-left button: popup for visitors ---------- */
+let popTab = "contact";
+
+async function copyText(t) {
+  try { await navigator.clipboard.writeText(t); return; } catch (e) {}
+  /* fallback for browsers that block the clipboard API */
+  const ta = document.createElement("textarea");
+  ta.value = t;
+  ta.style.cssText = "position:fixed;opacity:0;left:0;top:0";
+  $("contactPopup").appendChild(ta);
+  ta.select();
+  try { document.execCommand("copy"); } catch (e) {}
+  ta.remove();
+}
+
+function copyButton(label, getText) {
+  const b = el("button", "btn", label);
+  b.type = "button";
+  b.onclick = async () => {
+    await copyText(getText());
+    b.textContent = "Copied \u2713";
+    setTimeout(() => { b.textContent = label; }, 1600);
+  };
+  return b;
+}
+
+function popTabList() {
+  const c = data.site.contact;
+  const t = [{ id: "contact", label: "Contact" }];
+  if (c.info || IS_ADMIN) t.push({ id: "info", label: "Info" });
+  if (c.payment || IS_ADMIN) t.push({ id: "payment", label: "Payment" });
+  return t;
+}
+
+function renderPopup() {
+  const c = data.site.contact;
+  $("popTitle").textContent = c.text;
+
+  const tabs = popTabList();
+  if (!tabs.some(t => t.id === popTab)) popTab = "contact";
+  const bar = $("popTabs");
+  bar.replaceChildren();
+  tabs.forEach(t => {
+    const b = el("button", "tab", t.label);
+    b.type = "button";
+    b.setAttribute("role", "tab");
+    b.setAttribute("aria-selected", String(t.id === popTab));
+    b.onclick = () => { popTab = t.id; renderPopup(); };
+    bar.appendChild(b);
+  });
+
+  const body = $("popBody");
+  body.replaceChildren();
+
+  if (popTab === "contact") {
+    if (c.message) body.appendChild(el("p", "pop-text", c.message));
+    const email = c.email.replace(/^mailto:/i, "").trim();
+    if (email) {
+      body.appendChild(el("div", "emailbox", email));
+      const acts = el("div", "pop-actions");
+      acts.appendChild(copyButton("Copy Gmail", () => email));
+      const m = el("a", "btn blue", "Open mail app");
+      m.href = "mailto:" + email + "?subject=" + encodeURIComponent("Website request");
+      acts.appendChild(m);
+      body.appendChild(acts);
+    }
+    const link = toLink(c.link);
+    if (link) {
+      const a = el("a", "btn blue", "Message me");
+      a.href = link;
+      if (!link.startsWith("mailto:")) { a.target = "_blank"; a.rel = "noopener noreferrer"; }
+      body.appendChild(a);
+    }
+    if (!email && !link) body.appendChild(el("p", "pop-empty", "No contact details yet. Add them from Top-left button in the editor bar."));
+  } else {
+    const text = popTab === "info" ? c.info : c.payment;
+    if (text) {
+      body.appendChild(el("p", "pop-text", text));
+      if (popTab === "payment") body.appendChild(copyButton("Copy details", () => text));
+    } else {
+      body.appendChild(el("p", "pop-empty", "Nothing here yet. Add it from Top-left button in the editor bar."));
+    }
+  }
+  $("popFoot").hidden = !IS_ADMIN;
+}
+
+$("contactBtn").onclick = () => {
+  popTab = "contact";
+  renderPopup();
+  $("contactPopup").showModal();
+};
+$("popClose").onclick = () => $("contactPopup").close();
+$("contactPopup").addEventListener("click", e => { if (e.target === $("contactPopup")) $("contactPopup").close(); });
+
+/* ---------- top-left button: editor ---------- */
 function openContact() {
-  $("cText").value = data.site.contact.text;
-  $("cLink").value = data.site.contact.link;
+  const c = data.site.contact;
+  $("cText").value = c.text;
+  $("cEmail").value = c.email;
+  $("cMessage").value = c.message;
+  $("cLink").value = c.link;
+  $("cInfo").value = c.info;
+  $("cPay").value = c.payment;
   $("contactDialog").showModal();
 }
 $("btnContact").onclick = openContact;
-$("contactBtn").addEventListener("click", e => {
-  if (IS_ADMIN && !$("contactBtn").getAttribute("href")) { e.preventDefault(); openContact(); }
-});
-$("contactBtn").addEventListener("keydown", e => {
-  if (e.key === "Enter" && !$("contactBtn").getAttribute("href")) { if (IS_ADMIN) openContact(); }
-});
+$("popEdit").onclick = () => { $("contactPopup").close(); openContact(); };
 $("cCancel").onclick = () => $("contactDialog").close();
 $("contactForm").onsubmit = () => {
   data.site.contact = {
     text: $("cText").value.trim() || "Build your own website!",
-    link: toLink($("cLink").value)
+    email: $("cEmail").value.trim().replace(/^mailto:/i, ""),
+    message: $("cMessage").value.trim(),
+    link: $("cLink").value.trim() ? toLink($("cLink").value) : "",
+    info: $("cInfo").value.trim(),
+    payment: $("cPay").value.trim()
   };
   changed();
 };
